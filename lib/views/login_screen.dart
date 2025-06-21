@@ -7,6 +7,8 @@ import 'utils/helper.dart';
 import 'widgets/custom_form_field.dart'; // Akan dibuat nanti
 import 'widgets/primary_button.dart'; // Sudah didefinisikan
 import 'widgets/rich_text_widget.dart'; // Akan dibuat nanti
+import '../services/api_service.dart'; // Tambahkan ini
+// Tambahkan ini
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -100,10 +102,51 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 Spacer(),
                 PrimaryButton(
-                  onPressed: () {
-                    log('Login onTap');
-                    context.goNamed(RouteNames.main);
-                    // Tambahkan logika login Anda di sini
+                  onPressed: () async {
+                    // Memastikan semua validasi formulir lulus
+                    if (formkey.currentState!.validate()) {
+                      try {
+                        // Memanggil fungsi loginUser dari ApiService
+                        // Ini adalah proses asinkron, jadi pakai 'await'
+                        final user = await ApiService.loginUser(
+                          email:
+                              emailController
+                                  .text, // Mengambil teks dari input email
+                          password:
+                              passwordController
+                                  .text, // Mengambil teks dari input password
+                        );
+
+                        // Jika login berhasil, kita akan mendapatkan objek 'user'
+                        // Logika navigasi setelah login berhasil
+                        if (mounted) {
+                          // 'mounted' memastikan widget masih ada sebelum navigasi
+                          // ignore: use_build_context_synchronously
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            // Tampilkan pesan sukses
+                            SnackBar(
+                              content: Text('Selamat datang, ${user.name}!'),
+                            ),
+                          );
+                          // ignore: use_build_context_synchronously
+                          context.goNamed(
+                            RouteNames.main,
+                          ); // Arahkan ke halaman utama
+                        }
+                      } catch (e) {
+                        // Jika terjadi error saat login (misalnya, email/password salah)
+                        log('Login Error: $e'); // Log error untuk debugging
+                        if (mounted) {
+                          // ignore: use_build_context_synchronously
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            // Tampilkan pesan error ke pengguna
+                            SnackBar(
+                              content: Text('Login gagal: ${e.toString()}'),
+                            ),
+                          );
+                        }
+                      }
+                    }
                   },
                   title: 'Masuk',
                 ),

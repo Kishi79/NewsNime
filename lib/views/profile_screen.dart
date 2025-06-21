@@ -1,9 +1,12 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:newsnime/routes/route_name.dart';
 import 'package:newsnime/views/widgets/profile_data_widget.dart';
 import 'package:newsnime/views/widgets/profile_tile.dart';
 import 'utils/helper.dart';
+import '../services/api_service.dart'; // Tambahkan ini
 // Akan dibuat nanti
 
 class ProfileScreen extends StatelessWidget {
@@ -18,7 +21,9 @@ class ProfileScreen extends StatelessWidget {
           Stack(
             alignment: Alignment.bottomCenter,
             children: [
-              Image.asset('assets/images/Meliuk-liuk.png'), // Anda akan memerlukan gambar ini
+              Image.asset(
+                'assets/images/Meliuk-liuk.png',
+              ), // Anda akan memerlukan gambar ini
               Text('Data Diri', style: headline4),
               vsTiny,
             ],
@@ -49,7 +54,9 @@ class ProfileScreen extends StatelessWidget {
                           child: CircleAvatar(
                             backgroundColor: cGrey,
                             radius: 70.r,
-                            backgroundImage: AssetImage('assets/images/news logo.png'), // Anda akan memerlukan gambar ini
+                            backgroundImage: AssetImage(
+                              'assets/images/news logo.png',
+                            ), // Anda akan memerlukan gambar ini
                           ),
                         ),
                       ),
@@ -71,7 +78,8 @@ class ProfileScreen extends StatelessWidget {
                       vsTiny,
                       ProfileDataWidget(
                         profile: 'Alamat',
-                        dataProfile: ': Jl. Cangkring Raya, Maleer, Kec. Batununggal, Kota Bandung, Jawa Barat',
+                        dataProfile:
+                            ': Jl. Cangkring Raya, Maleer, Kec. Batununggal, Kota Bandung, Jawa Barat',
                       ),
                     ],
                   ),
@@ -83,7 +91,10 @@ class ProfileScreen extends StatelessWidget {
                     log('Edit Profile onTap');
                   },
                   leading: Icon(Icons.border_color_outlined, color: cBlack),
-                  trailing: Icon(Icons.keyboard_arrow_right_rounded, color: cBlack),
+                  trailing: Icon(
+                    Icons.keyboard_arrow_right_rounded,
+                    color: cBlack,
+                  ),
                 ),
                 Divider(color: cBlack, height: 4.0),
                 ProfileMenuTile(
@@ -92,17 +103,29 @@ class ProfileScreen extends StatelessWidget {
                     log('Edit Password onTap');
                   },
                   leading: Icon(Icons.password, color: cBlack),
-                  trailing: Icon(Icons.keyboard_arrow_right_rounded, color: cBlack),
+                  trailing: Icon(
+                    Icons.keyboard_arrow_right_rounded,
+                    color: cBlack,
+                  ),
                 ),
                 Divider(color: cBlack, height: 4.0),
                 ProfileMenuTile(
                   title: 'Keluar',
-                  onTap: () {
+                  onTap: () async {
                     log('Logout onTap');
-                    // Implementasikan logika keluar
+                    await ApiService.clearToken(); // Panggil fungsi untuk menghapus token
+                    if (context.mounted) {
+                      // Pastikan widget masih ada sebelum navigasi
+                      context.goNamed(
+                        RouteNames.login,
+                      ); // Arahkan pengguna kembali ke layar login
+                    }
                   },
                   leading: Icon(Icons.logout_rounded, color: cBlack),
-                  trailing: Icon(Icons.keyboard_arrow_right_rounded, color: cBlack),
+                  trailing: Icon(
+                    Icons.keyboard_arrow_right_rounded,
+                    color: cBlack,
+                  ),
                 ),
               ],
             ),

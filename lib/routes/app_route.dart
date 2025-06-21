@@ -33,29 +33,36 @@ class AppRouter {
         GoRoute(
           path: "/intro",
           name: RouteNames.introduction,
-          pageBuilder: (context, state) => MaterialPage(child: IntroductionScreen()),
+          pageBuilder:
+              (context, state) => MaterialPage(child: IntroductionScreen()),
         ),
         GoRoute(
           path: '/login',
           name: RouteNames.login,
           pageBuilder: (context, state) => MaterialPage(child: LoginScreen()),
           routes: [
-            GoRoute (
+            GoRoute(
               path: "register", // Jalur relatif
               name: RouteNames.register,
               pageBuilder: (_, __) => MaterialPage(child: RegisterScreen()),
             ),
           ],
         ),
-        GoRoute( // Ditambahkan untuk MainScreen
+        GoRoute(
+          // Ditambahkan untuk MainScreen
           path: '/main',
           name: RouteNames.main,
           pageBuilder: (context, state) => MaterialPage(child: MainScreen()),
         ),
-        GoRoute( // Ditambahkan untuk DetailScreen
-          path: '/detail',
+        GoRoute(
+          path: '/detail/:id', // Tambahkan parameter ID di URL
           name: RouteNames.detail,
-          pageBuilder: (context, state) => MaterialPage(child: DetailScreen()),
+          pageBuilder:
+              (context, state) => MaterialPage(
+                child: DetailScreen(
+                  articleId: state.pathParameters['id']!,
+                ), // Ambil ID dari URL
+              ),
         ),
       ],
     );
